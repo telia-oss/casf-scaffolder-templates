@@ -1,0 +1,12 @@
+[DESIGN]
+# Adjust number of maximum statemnts
+max-locals=25
+max-branches=25
+max-args=10
+max-attributes=10
+max-public-methods=30
+max-statements=55
+max-line-length=125
+
+[SIMILARITIES]
+min-similarity-lines = 20
