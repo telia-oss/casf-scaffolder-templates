@@ -9,7 +9,7 @@ metadata:
     - python
 spec:
   owner: web@example.com
-  type: website
+  type: service
   parameters:
     - title: Provide some simple information
       required:
