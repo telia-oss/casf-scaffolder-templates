@@ -47,7 +47,7 @@ spec:
   steps:
     - id: template
       name: Fetch Template
-      action: fetch:cookiecutter
+      action: run:yeoman
       input:
         url: ./skeleton
         copyWithoutRender:
