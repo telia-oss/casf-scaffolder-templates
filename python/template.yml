@@ -16,13 +16,17 @@ spec:
         - name
         - owner
       properties:
-        name:
+        projectName:
           title: Name
           type: string
           description: Unique name of the component
           ui:autofocus: true
           ui:options:
             rows: 5
+        pythonVersion:
+          title: Name
+          type: int
+          description: Unique name of the component
         owner:
           title: Owner
           type: string
@@ -31,15 +35,6 @@ spec:
           ui:options:
             allowedKinds:
               - Group
-        system:
-          title: System
-          type: string
-          description: System of the component
-          ui:field: EntityPicker
-          ui:options:
-            allowedKinds:
-              - System
-            defaultKind: System
 
     - title: Choose a location
       required:
