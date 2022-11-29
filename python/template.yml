@@ -16,16 +16,16 @@ spec:
         - name
         - owner
       properties:
-        projectName:
+        name:
           title: Name
           type: string
           description: Unique name of the component
           ui:autofocus: true
           ui:options:
             rows: 5
-        pythonVersion:
-          title: Name
-          type: int
+        version:
+          title: Python version
+          type: string
           description: Unique name of the component
         owner:
           title: Owner
@@ -60,9 +60,8 @@ spec:
       input:
         url: ./template
         values:
-          name: ${{ parameters.name }}
-          owner: ${{ parameters.owner }}
-          system: ${{ parameters.system }}
+          projectName: ${{ parameters.name }}
+          pythonVersion: ${{ parameters.version }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
     - id: publish
