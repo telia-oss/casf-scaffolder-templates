@@ -63,7 +63,7 @@ spec:
       name: Fetch Base
       action: fetch:copier
       input:
-        url: ./template
+        url: ./skeleton
         values:
           name: ${{ parameters.name }}
           owner: ${{ parameters.owner }}
