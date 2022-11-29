@@ -2,29 +2,31 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: casf-python-template
-  title: Create Python template
-  description: CASF python template
+  title: Create Python template 4
+  description: CASF python template 4
   tags:
     - casf
     - python
 spec:
   owner: web@example.com
-  type: website
+  type: service
   parameters:
-    - title: Provide some simple information
+    - title: Fill in some steps
       required:
-        - component_id
+        - name
         - owner
       properties:
-        component_id:
+        name:
           title: Name
           type: string
           description: Unique name of the component
-          ui:field: EntityNamePicker
-        description:
-          title: Description
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        version:
+          title: Python version
           type: string
-          description: Help others understand what this website is for.
+          description: Unique name of the component
         owner:
           title: Owner
           type: string
@@ -33,9 +35,11 @@ spec:
           ui:options:
             allowedKinds:
               - Group
+
     - title: Choose a location
       required:
         - repoUrl
+        - dryRun
       properties:
         repoUrl:
           title: Repository Location
@@ -44,40 +48,45 @@ spec:
           ui:options:
             allowedHosts:
               - github.com
+        dryRun:
+          title: Only perform a dry run, don't publish anything
+          type: boolean
+          default: false
+
   steps:
-    - id: template
-      name: Fetch Template
-      action: fetch:template
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:copier
       input:
-        url: ./skeleton
-        copyWithoutRender:
-          - .github/workflows/*
+        url: ./template
         values:
-          component_id: ${{ parameters.component_id }}
-          description: ${{ parameters.description }}
+          projectName: ${{ parameters.name }}
+          pythonVersion: ${{ parameters.version }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
-          owner: ${{ parameters.owner }}
 
     - id: publish
+      if: ${{ parameters.dryRun !== true }}
       name: Publish
       action: publish:github
       input:
         allowedHosts:
           - github.com
-        description: This is ${{ parameters.component_id }}
+        description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
 
-    - id: register
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: "/catalog-info.yaml"
+#    - id: register
+#      if: ${{ parameters.dryRun !== true }}
+#      name: Register
+#      action: catalog:register
+#      input:
+#        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+#        catalogInfoPath: '/catalog-info.yaml'
 
-  output:
-    links:
-      - title: Repository
-        url: ${{ steps.publish.output.remoteUrl }}
-      - title: Open in catalog
-        icon: catalog
-        entityRef: ${{ steps.register.output.entityRef }}
+
+#  output:
+#    links:
+#      - title: Repository
+#        url: ${{ steps.publish.output.remoteUrl }}
+#      - title: Open in catalog
+#        icon: catalog
+#        entityRef: ${{ steps.register.output.entityRef }}
