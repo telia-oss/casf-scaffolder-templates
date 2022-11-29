@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include {{ projectName }}"
+      include_role:
+        name: "{{ projectName }}"

@@ -1,0 +1,9 @@
+---
+name: Build
+on: [push, pull_request] 
+
+jobs:
+  build:
+    uses: telia-company/casf-actions-workflows-shared-library/.github/workflows/terraform.yml@main
+    with:
+      version: "1.2.2"

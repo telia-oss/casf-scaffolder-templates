@@ -1,0 +1,22 @@
+projectName:
+    type: str
+
+projectDescription:
+    type: str
+    default: GitHub project
+
+repoPath:
+    type: str
+    default: "{{ projectName }}"
+
+version:
+    type: int
+
+_tasks:
+  - "curl https://raw.githubusercontent.com/telia-company/casf-template-common-files/master/main.yml -o .github/workflows/main.yml"
+
+ci: github
+_jinja_extensions:
+- copier_templates_extensions.TemplateExtensionLoader
+- extensions/context.py:ContextUpdater
+- extensions/slugify.py:SlugifyExtension

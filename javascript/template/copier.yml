@@ -1,0 +1,7 @@
+projectName:
+    type: str
+
+nodeVersion:
+    type: str
+    default: "18.1"
+
