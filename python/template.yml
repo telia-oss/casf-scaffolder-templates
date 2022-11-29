@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: casf-python-template
   title: Create Python template 2
-  description: CASF python template
+  description: CASF python template 3
   tags:
     - casf
     - python
