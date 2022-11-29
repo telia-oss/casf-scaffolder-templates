@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: casf-python-template
-  title: Create Python template 2
+  title: Create Python template 3
   description: CASF python template 3
   tags:
     - casf
@@ -63,7 +63,7 @@ spec:
       name: Fetch Base
       action: fetch:copier
       input:
-        url: ./skeleton
+        url: ./template
         values:
           name: ${{ parameters.name }}
           owner: ${{ parameters.owner }}
