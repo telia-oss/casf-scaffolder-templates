@@ -1,9 +1,33 @@
----
-name: Build
-on: [push, pull_request]
+on:
+  workflow_call:
+    inputs:
+      eslint:
+        required: false
+        type: boolean
+        default: true
+      version:
+        required: false
+        type: string
+        default: "18.x"
 
 jobs:
   build:
-    uses: telia-company/casf-actions-workflows-shared-library/.github/workflows/node.yml@main
-    with:
-      version: "{{ nodeVersion }}"
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use Node ${{ inputs.version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.version }}
+
+      - name: Install modules
+        run: npm install
+
+      - name: Run dependency check
+        run: npm install -D owasp-dependency-check
+
+      - name: Run ESLint
+        if: inputs.eslint
+        run: npm run lint
