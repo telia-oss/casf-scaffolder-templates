@@ -1,11 +1,8 @@
 ---
 on:
-  workflow_call:
-    inputs:
-      pytest:
-        required: false
-        type: string
-        default: "tests"
+  push:
+    branches:
+      - "*"
 
 jobs:
   build:
