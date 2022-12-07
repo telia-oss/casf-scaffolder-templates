@@ -6,10 +6,6 @@ on:
         required: false
         type: string
         default: "tests"
-      version:
-        required: false
-        type: string
-        default: "3.8"
 
 jobs:
   build:
@@ -21,7 +17,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v3
         with:
-          python-version: '${{ inputs.version }}'
+          python-version: '{{ pythonVersion }}'
           architecture: 'x64'
 
       - name: Install dependencies
