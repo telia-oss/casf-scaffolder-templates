@@ -1,19 +1,13 @@
 ---
 on:
-  workflow_call:
-    inputs:
-      pytest:
-        required: false
-        type: string
-        default: "tests"
-      version:
-        required: false
-        type: string
-        default: "3.8"
-
+  push:
+    branches:
+      - main
+      - master
 jobs:
   build:
-    runs-on: [ubuntu-latest]
+    name: Python build
+    runs-on: [ self-hosted ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -21,7 +15,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v3
         with:
-          python-version: '${{ inputs.version }}'
+          python-version: '{{ pythonVersion }}'
           architecture: 'x64'
 
       - name: Install dependencies
