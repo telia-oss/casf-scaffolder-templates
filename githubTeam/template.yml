@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: casf-github-team-template
-  title: asd
+  title: GitHub team
   description: CASF GitHub Team
   tags:
     - casf
