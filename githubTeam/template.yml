@@ -8,7 +8,7 @@ metadata:
     - casf
     - github
 spec:
-  owner: web@example.com
+  owner: tobias.estefors@teliacompany.com
   type: service
   parameters:
     - title: Fill in some steps
