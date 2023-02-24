@@ -28,7 +28,7 @@ spec:
           description: team description
           default: GitHub development team
         members:
-          type: array
+          type: array 
           items:
             type: string
           ui:options:
