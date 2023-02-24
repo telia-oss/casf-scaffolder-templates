@@ -33,12 +33,6 @@ spec:
             type: string
           ui:options:
             orderable: false
-        repos:
-          type: array
-          items:
-            type: string
-          ui:options:
-            orderable: false
 
     - title: Choose a location
       required:
@@ -65,7 +59,6 @@ spec:
         repoUrl: ${{ parameters.repoUrl }}
         teamName: ${{ parameters.name }}
         teamMembers: ${{ parameters.members}}
-        repositories: ${{ parameters.repos}}
     
   output:
     links:
