@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.vmware.pscoe.o11n</groupId>
+        <artifactId>typescript-project-all</artifactId>
+        <version>2.23.0</version>
+    </parent>
+
+    <groupId>net.teliacompany.prc.aa</groupId>
+    <artifactId>sample-ts-project</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>package</packaging>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/telia-company/prc-aa-sample-ts-project</developerConnection>
+    </scm>
+
+    <properties>
+        <generated.from>package-typescript-archetype</generated.from>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.vmware.pscoe.ts</groupId>
+            <artifactId>vro</artifactId>
+            <type>pom</type>
+            <version>7.0.26</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>http</artifactId>
+            <type>package</type>
+            <version>2.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>http</artifactId>
+            <type>tgz</type>
+            <scope>compile</scope>
+            <version>2.1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>logging</artifactId>
+            <type>package</type>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>logging</artifactId>
+            <type>tgz</type>
+            <scope>compile</scope>
+            <version>2.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts.vra</groupId>
+            <artifactId>authentication</artifactId>
+            <type>package</type>
+            <version>2.0.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts.vra</groupId>
+            <artifactId>authentication</artifactId>
+            <version>2.0.21</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>iaas</artifactId>
+            <type>package</type>
+            <version>2.0.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>iaas</artifactId>
+            <version>2.0.21</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>policy</artifactId>
+            <type>package</type>
+            <version>2.0.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>policy</artifactId>
+            <version>2.0.21</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>catalog</artifactId>
+            <type>package</type>
+            <version>2.0.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>catalog</artifactId>
+            <version>2.0.21</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>content</artifactId>
+            <type>package</type>
+            <version>2.0.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>content</artifactId>
+            <version>2.0.21</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>vro</artifactId>
+            <type>package</type>
+            <version>2.0.21</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.ts.vra</groupId>
+            <artifactId>vro</artifactId>
+            <version>2.0.21</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>pipeline</artifactId>
+            <version>1.0.0</version>
+            <type>package</type>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>pipeline</artifactId>
+            <version>1.0.0</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>util</artifactId>
+            <version>2.1.16</version>
+            <type>package</type>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>util</artifactId>
+            <version>2.1.16</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library</groupId>
+            <artifactId>activedirectory</artifactId>
+            <type>package</type>
+            <version>2.0.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library</groupId>
+            <artifactId>install</artifactId>
+            <type>package</type>
+            <version>1.8.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library</groupId>
+            <artifactId>util</artifactId>
+            <type>package</type>
+            <version>2.19.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library</groupId>
+            <artifactId>templates</artifactId>
+            <type>package</type>
+            <version>2.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library</groupId>
+            <artifactId>cryptojs</artifactId>
+            <type>package</type>
+            <version>3.1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>infoblox</artifactId>
+            <type>package</type>
+            <version>2.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vmware.pscoe.library.ts</groupId>
+            <artifactId>infoblox</artifactId>
+            <version>2.0.5</version>
+            <type>tgz</type>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+</project>

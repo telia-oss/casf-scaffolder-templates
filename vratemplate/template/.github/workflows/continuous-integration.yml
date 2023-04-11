@@ -1,0 +1,52 @@
+# Continuous Integration pipeline.
+# Executes on every push to every branch.
+# The solutions is:
+# - Cloned
+# - Tested
+# - Packaged
+# - Published to JFrog Artifactory
+name: Continuous Integration
+
+on:
+  push:
+    # In order to change the branches add values to the list like:
+    # branches: [ main, stage, "feature/**", "bugfix/**" ]
+    # More examples:
+    # - '*'     - matches every branch that doesn't contain a '/'
+    # - '*/*'   - matches every branch containing a single '/'
+    # - '**'    - matches every branch
+    # - '!main' - all except for "main" branch
+    branches: [ "**" ]
+
+jobs:
+  build:
+    name: Test, build and publish artifact
+    runs-on: [telia-managed, Linux, X64, medium]
+    steps:
+
+      # Checkout the project repository.
+      - name: Checkout project
+        uses: actions/checkout@v3
+
+      # Set up all required components - Java 8 JDK, Maven, Node.js etc.
+      - name: Setup worker
+        uses: telia-company/.github/actions/vrbt/setup-worker@main
+
+      # Set up Maven settings.
+      - name: Setup Maven settings
+        uses: telia-company/.github/actions/vrbt/set-maven-settings@main
+        with:
+          settings_xml_username: ${{ secrets.ARTIFACTORY_WRITER_USERNAME }}
+          settings_xml_password: ${{ secrets.ARTIFACTORY_WRITER_PASSWORD }}
+
+      # Run project tests.
+      - name: Run tests
+        uses: telia-company/.github/actions/vrbt/test@main
+
+      # Build project.
+      - name: Build project
+        uses: telia-company/.github/actions/vrbt/build@main
+
+      # Publish the produced artifacts.
+      - name: Publish project artifact
+        uses: telia-company/.github/actions/vrbt/publish-artifacts@main

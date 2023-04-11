@@ -1,0 +1,167 @@
+# Continuous Deployment pipeline.
+# Triggered on successful continuous integration pipeline completion on the master branch.
+name: Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: [ "Continuous Integration" ]
+    branches: [ main ]
+    types: [ completed ]
+
+jobs:
+  on-build-failure:
+    runs-on: [telia-managed, Linux, X64, medium]
+    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+    steps:
+      - name: Indicate deplooyment error
+        run: echo "Build did not pass with success - cancelling deployment!" && exit 1
+
+  on-build-success:
+    runs-on: [telia-managed, Linux, X64, medium]
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: "Development (nb999vra05)"
+    steps:
+
+      # Checkout the project repository.
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      # Set up all required components - Java 8 JDK, Maven, Node.js etc.
+      - name: Setup worker
+        uses: telia-company/.github/actions/vrbt/setup-worker@main
+        with:
+          install_xmllint: true
+
+      # Set up Maven settings.
+      - name: Setup Maven settings
+        uses: telia-company/.github/actions/vrbt/set-maven-settings@main
+        with:
+          settings_xml_username: ${{ secrets.ARTIFACTORY_WRITER_USERNAME }}
+          settings_xml_password: ${{ secrets.ARTIFACTORY_WRITER_PASSWORD }}
+
+      # Extracting artifact details from pom if not provided as inputs
+      - name: Define artifact details
+        shell: bash
+        run: |
+          VRBT_MAIN_PACKAGE_PATH=$(pwd)
+          echo "VRBT_GROUP_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="groupId"]/text()' $VRBT_MAIN_PACKAGE_PATH/pom.xml)" >> $GITHUB_ENV
+          echo "VRBT_ARTIFACT_ID=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' $VRBT_MAIN_PACKAGE_PATH/pom.xml)" >> $GITHUB_ENV
+          VRBT_ARTIFACT_VERSION="$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' $VRBT_MAIN_PACKAGE_PATH/pom.xml)"
+          echo "VRBT_ARTIFACT_VERSION=$VRBT_ARTIFACT_VERSION" >> $GITHUB_ENV
+
+      # Indicate it's a snapshot version.
+      - name: Skip snapshot version deployments
+        shell: bash
+        run: echo "Snapshot version detected (${{ env.VRBT_ARTIFACT_VERSION }}), skip deployment."
+
+      # Fetch the target artifact.
+      - name: Fetch artifact
+        uses: telia-company/.github/actions/vrbt/fetch-artifact@main
+        with:
+          group_id: ${{ env.VRBT_GROUP_ID }}
+          artifact_id: ${{ env.VRBT_ARTIFACT_ID }}
+          artifact_version: ${{ env.VRBT_ARTIFACT_VERSION }}
+
+      # Deploying the solution on the target environment.
+      - name: Deploy solution
+        uses: telia-company/.github/actions/vrbt/deploy-artifact@main
+        with:
+          http_connection_timeout: ${{ secrets.VRBT_HTTP_CONNECTION_TIMEOUT }}
+          http_socket_timeout: ${{ secrets.VRBT_HTTP_SOCKET_TIMEOUT }}
+          ignore_ssl_certificate_verification: ${{ secrets.VRBT_IGNORE_SSL_CERTIFICATE_VERIFICATION }}
+          ignore_ssl_host_verification: ${{ secrets.VRBT_IGNORE_SSL_HOST_VERIFICATION }}
+          vra_server: ${{ secrets.VRBT_VRA_SERVER }}
+          vra_port: ${{ secrets.VRBT_VRA_PORT }}
+          vra_tenant: ${{ secrets.VRBT_VRA_TENANT }}
+          vra_username: ${{ secrets.VRBT_VRA_USERNAME }}
+          vra_password: ${{ secrets.VRBT_VRA_PASSWORD }}
+          vrang_host: ${{ secrets.VRBT_VRANG_HOST }}
+          vrang_csp_host: ${{ secrets.VRBT_VRANG_CSP_HOST }}
+          vrang_proxy: ${{ secrets.VRBT_VRANG_PROXY }}
+          vrang_port: ${{ secrets.VRBT_VRANG_PORT }}
+          vrang_project_id: ${{ secrets.VRBT_VRANG_PROJECT_ID }}
+          vrang_data_collection_delay_seconds: ${{ secrets.VRBT_VRANG_DATA_COLLECTION_DELAY_SECONDS }}
+          vrang_org_id: ${{ secrets.VRBT_VRANG_ORG_ID }}
+          vrang_org_name: ${{ secrets.VRBT_VRANG_ORG_NAME }}
+          vrang_project_name: ${{ secrets.VRBT_VRANG_PROJECT_NAME }}
+          vrang_auth_with_refresh_token: ${{ secrets.VRBT_VRANG_AUTH_WITH_REFRESH_TOKEN }}
+          vrang_refresh_token: ${{ secrets.VRBT_VRANG_REFRESH_TOKEN }}
+          vrang_username: ${{ secrets.VRBT_VRANG_USERNAME }}
+          vrang_password: ${{ secrets.VRBT_VRANG_PASSWORD }}
+          vrang_import_overwrite_mode: ${{ secrets.VRBT_VRANG_IMPORT_OVERWRITE_MODE }}
+          vrang_vro_integration_name: ${{ secrets.VRBT_VRANG_VRO_INTEGRATION_NAME }}
+          vrang_import_timeout: ${{ secrets.VRBT_VRANG_IMPORT_TIMEOUT }}
+          vrang_cloud_proxy_name: ${{ secrets.VRBT_VRANG_CLOUD_PROXY_NAME }}
+          vrli_server: ${{ secrets.VRBT_VRLI_SERVER }}
+          vrli_provider: ${{ secrets.VRBT_VRLI_PROVIDER }}
+          vrli_port: ${{ secrets.VRBT_VRLI_PORT }}
+          vrli_username: ${{ secrets.VRBT_VRLI_USERNAME }}
+          vrli_password: ${{ secrets.VRBT_VRLI_PASSWORD }}
+          vrli_vrops_server: ${{ secrets.VRBT_VRLI_VROPS_SERVER }}
+          vrli_vrops_server_port: ${{ secrets.VRBT_VRLI_VROPS_SERVER_PORT }}
+          vrli_vrops_server_user: ${{ secrets.VRBT_VRLI_VROPS_SERVER_USER }}
+          vrli_vrops_server_password: ${{ secrets.VRBT_VRLI_VROPS_SERVER_PASSWORD }}
+          vrli_vrops_server_auth_source: ${{ secrets.VRBT_VRLI_VROPS_SERVER_AUTH_SOURCE }}
+          vcd_server: ${{ secrets.VRBT_VCD_SERVER }}
+          vcd_port: ${{ secrets.VRBT_VCD_PORT }}
+          vcd_username: ${{ secrets.VRBT_VCD_USERNAME }}
+          vcd_password: ${{ secrets.VRBT_VCD_PASSWORD }}
+          vro_server: ${{ secrets.VRBT_VRO_SERVER }}
+          vro_port: ${{ secrets.VRBT_VRO_PORT }}
+          vro_tenant: ${{ secrets.VRBT_VRO_TENANT }}
+          vro_username: ${{ secrets.VRBT_VRO_USERNAME }}
+          vro_password: ${{ secrets.VRBT_VRO_PASSWORD }}
+          vro_refresh_token: ${{ secrets.VRBT_VRO_REFRESH_TOKEN }}
+          vro_auth: ${{ secrets.VRBT_VRO_AUTH }}
+          vro_authHost: ${{ secrets.VRBT_VRO_AUTHHOST }}
+          vro_authPort: ${{ secrets.VRBT_VRO_AUTHPORT }}
+          vro_proxy: ${{ secrets.VRBT_VRO_PROXY }}
+          vro_embedded: ${{ secrets.VRBT_VRO_EMBEDDED }}
+          vrops_sshPort: ${{ secrets.VRBT_VROPS_SSHPORT }}
+          vrops_sshUsername: ${{ secrets.VRBT_VROPS_SSHUSERNAME }}
+          vrops_sshPassword: ${{ secrets.VRBT_VROPS_SSHPASSWORD }}
+          vrops_dashboardUser: ${{ secrets.VRBT_VROPS_DASHBOARDUSER }}
+          vrops_httpPort: ${{ secrets.VRBT_VROPS_HTTPPORT }}
+          vrops_restUser: ${{ secrets.VRBT_VROPS_RESTUSER }}
+          vrops_restPassword: ${{ secrets.VRBT_VROPS_RESTPASSWORD }}
+          vrops_restAuthSource: ${{ secrets.VRBT_VROPS_RESTAUTHSOURCE }}
+          vrops_restAuthProvider: ${{ secrets.VRBT_VROPS_RESTAUTHPROVIDER }}
+          ssh_server: ${{ secrets.VRBT_SSH_SERVER }}
+          ssh_port: ${{ secrets.VRBT_SSH_PORT }}
+          ssh_username: ${{ secrets.VRBT_SSH_USERNAME }}
+          ssh_password: ${{ secrets.VRBT_SSH_PASSWORD }}
+          ssh_directory: ${{ secrets.VRBT_SSH_DIRECTORY }}
+          vra_import_packages: ${{ secrets.VRBT_VRA_IMPORT_PACKAGES }}
+          vra_ng_import_packages: ${{ secrets.VRBT_VRA_NG_IMPORT_PACKAGES }}
+          vro_import_packages: ${{ secrets.VRBT_VRO_IMPORT_PACKAGES }}
+          vcd_import_packages: ${{ secrets.VRBT_VCD_IMPORT_PACKAGES }}
+          vrops_import_packages: ${{ secrets.VRBT_VROPS_IMPORT_PACKAGES }}
+          vrli_import_packages: ${{ secrets.VRBT_VRLI_IMPORT_PACKAGES }}
+          ssh_import_packages: ${{ secrets.VRBT_SSH_IMPORT_PACKAGES }}
+          cs_import_packages: ${{ secrets.VRBT_CS_IMPORT_PACKAGES }}
+          abx_import_packages: ${{ secrets.VRBT_ABX_IMPORT_PACKAGES }}
+          vro_import_old_versions: ${{ secrets.VRBT_VRO_IMPORT_OLD_VERSIONS }}
+          skip_vro_import_old_versions: ${{ secrets.VRBT_SKIP_VRO_IMPORT_OLD_VERSIONS }}
+          vro_import_configuration_attribute_values: ${{ secrets.VRBT_VRO_IMPORT_CONFIGURATION_ATTRIBUTE_VALUES }}
+          vro_import_configuration_secure_attribute_values: ${{ secrets.VRBT_VRO_IMPORT_CONFIGURATION_SECURE_ATTRIBUTE_VALUES }}
+          vro_delete_old_versions: ${{ secrets.VRBT_VRO_DELETE_OLD_VERSIONS }}
+          vro_delete_last_version: ${{ secrets.VRBT_VRO_DELETE_LAST_VERSION }}
+          vro_delete_include_dependencies: ${{ secrets.VRBT_VRO_DELETE_INCLUDE_DEPENDENCIES }}
+          vra_import_old_versions: ${{ secrets.VRBT_VRA_IMPORT_OLD_VERSIONS }}
+          skip_vra_import_old_versions: ${{ secrets.VRBT_SKIP_VRA_IMPORT_OLD_VERSIONS }}
+          vra_import_overwrite_mode: ${{ secrets.VRBT_VRA_IMPORT_OVERWRITE_MODE }}
+          vra_delete_old_versions: ${{ secrets.VRBT_VRA_DELETE_OLD_VERSIONS }}
+          vra_delete_last_version: ${{ secrets.VRBT_VRA_DELETE_LAST_VERSION }}
+          vra_delete_include_dependencies: ${{ secrets.VRBT_VRA_DELETE_INCLUDE_DEPENDENCIES }}
+          vro_run_workflow: ${{ secrets.VRBT_VRO_RUN_WORKFLOW }}
+          vro_run_workflow_id: ${{ secrets.VRBT_VRO_RUN_WORKFLOW_ID }}
+          vro_run_workflow_input_file_path: ${{ secrets.VRBT_VRO_RUN_WORKFLOW_INPUT_FILE_PATH }}
+          vro_run_workflow_output_file_path: ${{ secrets.VRBT_VRO_RUN_WORKFLOW_OUTPUT_FILE_PATH }}
+          vro_run_workflow_err_file_path: ${{ secrets.VRBT_VRO_RUN_WORKFLOW_ERR_FILE_PATH }}
+          vro_run_workflow_timeout: ${{ secrets.VRBT_VRO_RUN_WORKFLOW_TIMEOUT }}
+          vcd_delete_old_versions: ${{ secrets.VRBT_VCD_DELETE_OLD_VERSIONS }}
+          vcd_import_old_versions: ${{ secrets.VRBT_VCD_IMPORT_OLD_VERSIONS }}
+          skip_vcd_import_old_versions: ${{ secrets.VRBT_SKIP_VCD_IMPORT_OLD_VERSIONS }}
+          vcd_import_overwrite_mode: ${{ secrets.VRBT_VCD_IMPORT_OVERWRITE_MODE }}
