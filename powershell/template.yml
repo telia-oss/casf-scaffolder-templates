@@ -68,6 +68,11 @@ spec:
           - github.com
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
+        protectDefaultBranch: true
+        deleteBranchOnMerge: true
+        requireCodeOwnerReviews: true
+        requiredApprovingReviewCount: 1
+        repoVisibility: "public"
 
     - id: register
       if: ${{ parameters.dryRun !== true }}
