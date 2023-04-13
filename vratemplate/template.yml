@@ -1,12 +1,12 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: casf-python-template
-  title: Create Python template 
-  description: CASF python template 
+  name: casf-vra-template
+  title: Create vRA template 
+  description: CASF vRA template 
   tags:
     - casf
-    - python
+    - vRA
 spec:
   owner: tobias.estefors@teliacompany.com
   type: service
@@ -23,10 +23,6 @@ spec:
           ui:autofocus: true
           ui:options:
             rows: 5
-        version:
-          title: Python version
-          type: string
-          description: Unique name of the component
         owner:
           title: Owner
           type: string
@@ -61,7 +57,6 @@ spec:
         url: ./template
         values:
           projectName: ${{ parameters.name }}
-          pythonVersion: ${{ parameters.version }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
     - id: publish
@@ -78,15 +73,6 @@ spec:
         requireCodeOwnerReviews: true
         requiredApprovingReviewCount: 1
         repoVisibility: "public"
-
-    - id: register
-      if: ${{ parameters.dryRun !== true }}
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
-
 
   output:
     links:
