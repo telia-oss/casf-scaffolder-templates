@@ -81,7 +81,7 @@ spec:
         deleteBranchOnMerge: true
         requireCodeOwnerReviews: true
         requiredApprovingReviewCount: 1
-        repoVisibility: "internal"
+        repoVisibility: "public"
 
     - id: register
       if: ${{ parameters.dryRun !== true }}
