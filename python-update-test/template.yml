@@ -1,8 +1,8 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: casf-python-template
-  title: Create Python template 
+  name: casf-python-template-update-test
+  title: Create Python template update test
   description: CASF python template 
   tags:
     - casf
