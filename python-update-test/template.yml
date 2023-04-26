@@ -1,0 +1,101 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: casf-python-template
+  title: Create Python template 
+  description: CASF python template 
+  tags:
+    - casf
+    - python
+spec:
+  owner: tobias.estefors@teliacompany.com
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - name
+        - owner
+      properties:
+        name:
+          title: Name
+          type: string
+          description: Unique name of the component
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+        version:
+          title: Python version
+          type: string
+          description: Unique name of the component
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+        update:
+          title: Is this an update on a current repository
+          type: boolean
+          default: false
+
+    - title: Choose a location
+      required:
+        - repoUrl
+        - dryRun
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+        dryRun:
+          title: Only perform a dry run, don't publish anything
+          type: boolean
+          default: false
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:copier
+      input:
+        url: ./template
+        values:
+          projectName: ${{ parameters.name }}
+          pythonVersion: ${{ parameters.version }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+
+    - id: publish
+      if: ${{ parameters.dryRun !== true }}
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+        protectDefaultBranch: true
+        deleteBranchOnMerge: true
+        requireCodeOwnerReviews: true
+        requiredApprovingReviewCount: 1
+        repoVisibility: "internal"
+
+    - id: register
+      if: ${{ parameters.dryRun !== true }}
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

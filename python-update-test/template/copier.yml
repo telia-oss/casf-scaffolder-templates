@@ -1,0 +1,4 @@
+projectName:
+    type: str
+pythonVersion:
+    type: int
