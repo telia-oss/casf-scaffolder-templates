@@ -60,28 +60,15 @@ spec:
   steps:
     - id: fetch-base
       name: Fetch Base
-      action: fetch:copier
+      action: update:copier
       input:
         url: ./template
+        repoUrl: ${{ parameters.repoUrl }}
         values:
           projectName: ${{ parameters.name }}
           pythonVersion: ${{ parameters.version }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
-    - id: publish
-      if: ${{ parameters.dryRun !== true }}
-      name: Publish
-      action: publish:github
-      input:
-        allowedHosts:
-          - github.com
-        description: This is ${{ parameters.name }}
-        repoUrl: ${{ parameters.repoUrl }}
-        protectDefaultBranch: true
-        deleteBranchOnMerge: true
-        requireCodeOwnerReviews: true
-        requiredApprovingReviewCount: 1
-        repoVisibility: "internal"
 
     - id: register
       if: ${{ parameters.dryRun !== true }}
