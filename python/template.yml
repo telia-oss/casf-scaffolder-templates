@@ -35,6 +35,10 @@ spec:
           ui:options:
             allowedKinds:
               - Group
+        update:
+          title: Is this an update on a current repository
+          type: boolean
+          default: false
 
     - title: Choose a location
       required:
