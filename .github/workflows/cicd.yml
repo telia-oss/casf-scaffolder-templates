@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Check for public repo visibility
         run: |
-          find . -name '*.yml' -type f -print0 | xargs -0 grep -H 'repoVisibility: "public"' || true
+          find . -name '*.yml' -type f -print0 | xargs -0 grep -H 'repoVisibility: "hoize"' || true
           if grep -r -q 'repoVisibility: "public"' .; then
             echo "Public repo visibility is not allowed"
             exit 1
