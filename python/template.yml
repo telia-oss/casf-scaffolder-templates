@@ -74,7 +74,7 @@ spec:
       action: publish:github
       input:
         allowedHosts:
-          - github.com
+          - github.teliacompany.net
         description: This is ${{ parameters.name }}
         repoUrl: ${{ parameters.repoUrl }}
         protectDefaultBranch: true
