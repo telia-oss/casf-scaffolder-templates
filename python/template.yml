@@ -51,7 +51,7 @@ spec:
           ui:field: RepoUrlPicker
           ui:options:
             allowedHosts:
-              - github.com
+              - github.teliacompany.net
         dryRun:
           title: Only perform a dry run, don't publish anything
           type: boolean
